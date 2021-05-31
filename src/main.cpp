@@ -4,10 +4,13 @@
 #include <fcntl.h>
 #include <linux/input.h>
 
-#define EVENT_DEVICE    "/dev/input/event4"
-#define EVENT_TYPE      EV_ABS
-#define EVENT_CODE_X    ABS_X
-#define EVENT_CODE_Y    ABS_Y
+#define EVENT_DEVICE "/dev/input/event4"
+#define EVENT_TYPE EV_ABS
+#define EVENT_CODE_X ABS_X
+#define EVENT_CODE_Y ABS_Y
+
+#define DEBOUNCE = 0.04
+#define THRESHOLD_SQUARED = 30
 
 /* TODO: Close fd on SIGINT (Ctrl-C), if it's open */
 
@@ -24,7 +27,8 @@ int main(int argc, char *argv[])
 
     /* Open Device */
     fd = open(EVENT_DEVICE, O_RDONLY);
-    if (fd == -1) {
+    if (fd == -1)
+    {
         fprintf(stderr, "%s is not a vaild device\n", EVENT_DEVICE);
         return EXIT_FAILURE;
     }
@@ -35,30 +39,44 @@ int main(int argc, char *argv[])
     printf("device file = %s\n", EVENT_DEVICE);
     printf("device name = %s\n", name);
 
-    for (;;) {
+    for (;;)
+    {
         const size_t ev_size = sizeof(struct input_event);
         ssize_t size;
 
         /* TODO: use select() */
 
         size = read(fd, &ev, ev_size);
-        if (size < ev_size) {
+        if (size < ev_size)
+        {
             fprintf(stderr, "Error size when reading\n");
             goto err;
         }
 
-        if (ev.type == EVENT_TYPE && (ev.code == EVENT_CODE_X
-                      || ev.code == EVENT_CODE_Y)) {
+        if (ev.code == ABS_MT_SLOT) {
+            printf("ABS_MT_SLOT! \n");
+            printf("%d %d %d\n", ev.code, ev.type, ev.value);
+        }
+
+        if (ev.code == ABS_MT_TRACKING_ID) {
+            printf("ABS_MT_TRACKING_ID \n");
+            printf("%d %d %d\n", ev.code, ev.type, ev.value);
+        }
+
+        if (ev.type == EVENT_TYPE && (ev.code == EVENT_CODE_X || ev.code == EVENT_CODE_Y))
+        {
             /* TODO: convert value to pixels */
-            
-            if(ev.code == EVENT_CODE_X && ev.value < 100) {
+
+            if (ev.code == EVENT_CODE_X && ev.value < 100)
+            {
                 printf("%s = %d\n", ev.code == EVENT_CODE_X ? "X" : "Y",
-                                    ev.value);
+                       ev.value);
                 system("xte \'key XF86MonBrightnessUp\'");
             }
-            if(ev.code == EVENT_CODE_X && ev.value > 1120) {
+            if (ev.code == EVENT_CODE_X && ev.value > 1120)
+            {
                 printf("%s = %d\n", ev.code == EVENT_CODE_X ? "X" : "Y",
-                                    ev.value);
+                       ev.value);
                 system("xte \'key XF86MonBrightnessDown\'");
             }
         }
