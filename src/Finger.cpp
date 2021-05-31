@@ -1,10 +1,20 @@
+#include <string>
 
+using namespace std;
 class Finger
 {
 public:
     int slot; // 0-9
     int abs_x;
     int abs_y;
+
+    Finger()
+    {
+        this->slot = -1;
+        this->abs_x = 0;
+        this->abs_y = 0;
+    }
+
     Finger(int slot, int abs_x, int abs_y)
     {
         this->slot = slot;

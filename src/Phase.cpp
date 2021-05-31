@@ -2,5 +2,6 @@ enum class Phase
 {
     start,
     update,
-    end
+    end,
+    idle
 };
