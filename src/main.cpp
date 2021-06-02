@@ -3,9 +3,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <linux/input.h>
-#include "GestureEmitter.cpp";
+#include "EventHandler.cpp"
 
-#define EVENT_DEVICE "/dev/input/event4"
+#define EVENT_DEVICE "/dev/input/event12"
 #define EVENT_TYPE EV_ABS
 #define EVENT_CODE_X ABS_X
 #define EVENT_CODE_Y ABS_Y
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     printf("device file = %s\n", EVENT_DEVICE);
     printf("device name = %s\n", name);
 
-    GestureEmitter emitter = GestureEmitter();
+    EventHandler handler = EventHandler();
     for (;;)
     {
         const size_t ev_size = sizeof(struct input_event);
@@ -56,20 +56,7 @@ int main(int argc, char *argv[])
             goto err;
         }
 
-        
-
-        if (ev.code == ABS_MT_SLOT) {
-            printf("ABS_MT_SLOT! \n");
-            printf("%d %d %d\n", ev.code, ev.type, ev.value);
-            Gesture *gesture = emitter.emit(ev);
-            Gesture g = *gesture;
-            cout << g.to_string();
-        }
-
-        if (ev.code == ABS_MT_TRACKING_ID) {
-            printf("ABS_MT_TRACKING_ID \n");
-            printf("%d %d %d\n", ev.code, ev.type, ev.value);
-        }
+        handler.put(ev);
 
         if (ev.type == EVENT_TYPE && (ev.code == EVENT_CODE_X || ev.code == EVENT_CODE_Y))
         {
