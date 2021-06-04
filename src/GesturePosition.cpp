@@ -1,5 +1,8 @@
 enum class GesturePosition
 {
-    edge,
+    left,
+    right,
+    top,
+    bottom,
     middle
 };

@@ -2,19 +2,19 @@
 #include <iostream>
 #include "Finger.cpp"
 #include "Phase.cpp"
-#include <map>
+#include "Gesture.cpp"
 
 using namespace std;
 class EventHandler
 {
 private:
-    map<int, Finger *> slots;
     int current_slot;
-    Phase phase = Phase::idle;
+    Gesture gesture = Gesture();
 
 public:
     int put(input_event &ev)
     {
+
         if (ev.code == ABS_MT_SLOT)
         {
             current_slot = ev.value;
@@ -24,7 +24,7 @@ public:
             if (ev.value == -1)
             {
                 // clear finger and current gesture
-                slots.erase(current_slot);
+                gesture.clear(current_slot);
             }
             else
             {
@@ -33,38 +33,38 @@ public:
                 {
                     current_slot = 0;
                 }
-                slots.insert({current_slot, new Finger()});
+                gesture.add_finger(current_slot, new Finger());
             }
         }
-        else if (ev.code == ABS_MT_POSITION_X || ev.code == ABS_MT_POSITION_Y)
+        else if (ev.code == ABS_MT_POSITION_X)
         {
             if (current_slot == -1)
             {
                 // one finger handling for edge gestures
+                current_slot = 0;
             }
-            else
+            gesture.move_finger("x", current_slot, ev.value);
+            if (gesture.phase == Phase::idle)
             {
-                // update finger position
-                Finger *finger = slots.at(current_slot);
-                if (ev.code == ABS_MT_POSITION_X)
-                {
-                    finger->abs_x = ev.value;
-                }
-                else if (ev.code == ABS_MT_POSITION_Y)
-                {
-                    finger->abs_y = ev.value;
-                }
-                phase == Phase::update;
-                cout << "Slot: " << current_slot;
-                cout << finger->to_string() << endl;
+                gesture.phase == Phase::start;
             }
+            else if (gesture.phase == Phase::start)
+            {
+                gesture.phase == Phase::update;
+            }
+        }
+        else if (ev.code == ABS_MT_POSITION_Y)
+        {
+            if (current_slot == -1)
+            {
+                // one finger handling for edge gestures
+                current_slot = 0;
+            }
+            gesture.move_finger("y", current_slot, ev.value);
+
+            gesture.update();
         }
 
-        if (phase == Phase::update)
-        {
-            phase == Phase::idle;
-            // flush data to gesture queue handler
-        }
         return 1;
     }
 };
