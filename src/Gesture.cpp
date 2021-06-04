@@ -7,6 +7,8 @@
 #include <map>
 #include <cmath>
 #include <math.h>
+#include <thread>
+// #include <pthread.h>
 
 #define DEBOUNCE 0.04
 #define THRESHOLD_SQUARED 30 // threshold to be considered a move, squared sum of x and y
@@ -80,17 +82,33 @@ public:
     }
     void perform()
     {
-        if (phase == Phase::start)
+        cout << "here perform" << endl;
+        GesturePosition position = this->position;
+        GestureDirection direction = this->direction;
+        if (position == GesturePosition::left)
         {
-            system(start_command.c_str());
+            if (direction == GestureDirection::down)
+            {
+                system("xte \'key XF86MonBrightnessDown\'");
+            }
+            else if (direction == GestureDirection::up)
+            {
+                cout << "up" << endl;
+                system("xte \'key XF86MonBrightnessUp\'");
+            }
+            cout << "FIRE!" << endl;
         }
-        else if (phase == Phase::update)
+        else if (position == GesturePosition::right)
         {
-            system(update_command.c_str());
-        }
-        else if (phase == Phase::end)
-        {
-            system(end_command.c_str());
+            if (direction == GestureDirection::down)
+            {
+                system("xte \'key XF86AudioLowerVolume\'");
+            }
+            if (direction == GestureDirection::up)
+            {
+                system("xte \'key XF86AudioRaiseVolume\'");
+            }
+            cout << "FIRE!" << endl;
         }
     }
 
@@ -180,7 +198,7 @@ public:
                         // vertical
                         cout << "y-cum : " << y_update << endl;
                         if (y_update <= 0)
-                        {   
+                        {
                             cout << "y-cum : " << y_update << endl;
                             this->direction = GestureDirection::up;
                         }
@@ -216,33 +234,24 @@ public:
                         }
                     }
 
-                    if (position == GesturePosition::left)
-                    {
-                        cout << "left ";
-                        if (direction == GestureDirection::down)
-                        {
-                            cout << "down" << endl;
-                            system("xte \'key XF86MonBrightnessDown\'");
-                        }
-                        else if (direction == GestureDirection::up)
-                        {   
-                            cout << "up" << endl;
-                            system("xte \'key XF86MonBrightnessUp\'");
-                        }
-                    }
-                    else if (position == GesturePosition::right)
-                    {
-                        if (direction == GestureDirection::down)
-                        {
-                            system("xte \'key XF86AudioLowerVolume\'");
-                        }
-                        if (direction == GestureDirection::up)
-                        {
-                            system("xte \'key XF86AudioRaiseVolume\'");
-                        }
-                    }
+                    //perform gesture in new thread
+                    thread t1(&Gesture::perform, this);
+                    t1.join();
                 }
             }
+        }
+    }
+
+    void clear_updates()
+    {
+        fingers_moved = 0;
+        int fingers_count = slots.size();
+        for (int i = 0; i < fingers_count; i++)
+        {
+            slots.at(i)->x_updates = 0;
+            slots.at(i)->y_updates = 0;
+            slots.at(i)->x_update = 0;
+            slots.at(i)->y_updates = 0;
         }
     }
 };
