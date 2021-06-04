@@ -1,40 +1,60 @@
 #include "Finger.cpp"
-#include "Phase.cpp"
+#include "GesturePosition.cpp"
+#include "GestureDirection.cpp"
+#include "GestureType.cpp"
 #include <string>
 #include <vector>
 
+#define DEBOUNCE = 0.04
+#define THRESHOLD_SQUARED = 30 // threshold to be considered a move, squared sum of x and y
+#define DECISION = 75          // sufficient movement to make decision on direction, scaled by the number of slots
+
 using namespace std;
+
 class Gesture
 {
-private:
-    vector<Finger> fingers;
-    string command;
-    Phase phase;
 
 public:
+    int fingers_count;
+    GestureDirection direction;
+    GesturePosition position;
+    GestureType type;
+    string command;
+
     Gesture()
     {
-        this->fingers = vector<Finger>();
-        this->phase = Phase::idle;
     }
 
     Gesture(vector<Finger> fingers, string command, Phase phase)
     {
-        this->fingers = fingers;
         this->command = command;
-        this->phase = phase;
     }
 
     string to_string() const
     {
-        string fingers_string = "";
-        for (auto finger : fingers)
+        return "command: " + command + "\n";
+    }
+
+    void end()
+    {
+        fingers_count = 0;
+        command = "";
+    }
+
+    void definePosition(int abs_x, int abs_y)
+    {   
+        //Todo: rewrite in relative values
+        if ((abs_x < 100 || abs_x > 1120) && (abs_y < 100 || abs_y))
         {
-            fingers_string += finger.to_string();
+            position = GesturePosition::edge;
         }
-        string phase_string =
-            phase == Phase::start ? "start" : phase == Phase::update ? "update": phase == Phase::update ? "end"
-                                                                     : "idle";
-        return "command: " + command + "\nFingers: " + fingers_string + "\nPhase: " + phase_string + "\n";
+        else
+        {
+            position = GesturePosition::middle;
+        }
+    }
+
+    void defineDirection(int x_prev, int x_new, int y_prev, int y_new) {
+        
     }
 };
