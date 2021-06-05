@@ -16,35 +16,20 @@ class Gesture
 {
 
 public:
+    map<int, Finger *> slots;
     int fingers_moved;
     GestureDirection direction;
     GesturePosition position;
     GestureType type = GestureType::swipe;
-    string start_command;
-    string update_command;
-    string end_command;
     Phase phase;
 
-    int total_update_x;
-    int total_update_y;
-    double debounce;
-    double update_time;
-
-    bool ready = false;
-    map<int, Finger *> slots;
+    int total_update_x; //x update of all fingers
+    int total_update_y; //y update of all fingers
+    double time_since_last_performance;
+    double update_time; // time of last x/y update of any finger
 
     Gesture()
     {
-    }
-
-    Gesture(vector<Finger> fingers, string start_command, Phase phase)
-    {
-        this->start_command = start_command;
-    }
-
-    string to_string() const
-    {
-        return "command: " + start_command + "\n";
     }
 
     void measure_position()
@@ -186,7 +171,7 @@ public:
             cout << "FIRE!" << endl;
         }
         else if (position == GesturePosition::bottom)
-        {   
+        {
             // todo: calculate direction more precicely as edge-righ sometimes is up_right or down_right
             if (direction == GestureDirection::right || direction == GestureDirection::up_right || direction == GestureDirection::down_right)
             {
@@ -233,10 +218,10 @@ public:
         {
             phase = Phase::update;
         }
-        this->debounce = 0;
+        this->time_since_last_performance = 0;
     }
 
-    void move_finger(const string axis, int slot, int value, timeval time)
+    void move_finger(const string axis, int slot, int value, timeval update_time)
     {
         Finger *finger = slots.at(slot);
         if (axis == "x")
@@ -252,21 +237,21 @@ public:
             total_update_y += finger->y_update - prev_update;
         }
 
-        int thr = finger->x_update * finger->x_update + finger->y_update * finger->y_update;
+        int update_power = finger->x_update * finger->x_update + finger->y_update * finger->y_update;
         if (!finger->moved)
         {
-            if (thr > THRESHOLD_SQUARED)
+            if (update_power > THRESHOLD_SQUARED)
             {
-                cout << finger->x_update << "^2 + " << finger->y_update << "^2 = " << thr << " > " << THRESHOLD_SQUARED << endl;
+                // cout << finger->x_update << "^2 + " << finger->y_update << "^2 = " << threshold << " > " << THRESHOLD_SQUARED << endl;
                 finger->moved = true;
                 fingers_moved += 1;
             }
         }
 
-        double now_time = time.tv_sec + (time.tv_usec / 1000000.0);
-        if (this->debounce < DEBOUNCE)
+        double now_time = update_time.tv_sec + (update_time.tv_usec / 1000000.0);
+        if (this->time_since_last_performance < DEBOUNCE)
         {
-            this->debounce = now_time - this->update_time;
+            this->time_since_last_performance = now_time - this->update_time;
         }
         this->update_time = now_time;
     }
@@ -310,3 +295,9 @@ public:
         }
     }
 };
+
+ostream &operator<<(ostream &stream, const Gesture gesture)
+{
+    stream << "fingers moved: " << gesture.fingers_moved << ", phase: " << gesture.phase << endl;
+    return stream;
+}

@@ -4,4 +4,3 @@
 #define DECISION = 75        // sufficient movement to make decision on direction, scaled by the number of slots
 #define ANGLE_X 16           // angle to interpret as horizontal
 #define ANGLE_Y 21           // angle to interpret as vertical
-

@@ -6,7 +6,6 @@ enum class Phase
     idle
 };
 
-
 std::ostream &operator<<(std::ostream &stream, const Phase phase)
 {
     switch (phase)
