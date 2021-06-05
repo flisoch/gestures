@@ -45,13 +45,13 @@ public:
         {
             int prev_update = finger->x_update;
             finger->move_x(value);
-            total_update_x += finger->x_update - prev_update;
+            this->total_update_x += finger->x_update - prev_update;
         }
         else if (axis == "y")
         {
             int prev_update = finger->y_update;
             finger->move_y(value);
-            total_update_y += finger->y_update - prev_update;
+            this->total_update_y += finger->y_update - prev_update;
         }
 
         int update_power = finger->x_update * finger->x_update + finger->y_update * finger->y_update;
@@ -61,7 +61,7 @@ public:
             {
                 // cout << finger->x_update << "^2 + " << finger->y_update << "^2 = " << threshold << " > " << THRESHOLD_SQUARED << endl;
                 finger->moved = true;
-                fingers_moved += 1;
+                this->fingers_moved += 1;
             }
         }
 
@@ -75,9 +75,9 @@ public:
 
     void try_perform()
     {
-        int fingers_count = finger_slots.size();
+        int fingers_count = this->finger_slots.size();
         // cout << "fingers count: " << fingers_count << " moved: " << fingers_moved << endl;
-        if (fingers_count == fingers_moved || phase == Phase::end)
+        if (fingers_count == this->fingers_moved || this->phase == Phase::end)
         {
             measure_direction();
             measure_position();
@@ -183,6 +183,7 @@ public:
 
         GesturePosition position = this->position;
         GestureDirection direction = this->direction;
+        Phase phase = this->phase;
         cout << "DIRECTION: " << direction << endl;
         cout << "POSITION: " << position << endl;
         cout << "PHASE: " << phase << endl;
@@ -268,14 +269,14 @@ public:
         }
         if (phase == Phase::start)
         {
-            phase = Phase::update;
+            this->phase = Phase::update;
         }
         this->time_since_last_performance = 0;
     }
 
     void clear(int slot)
     {
-        this->phase = Phase::end;
+        phase = Phase::end;
         try_perform();
         finger_slots.erase(slot);
         fingers_moved = 0;
