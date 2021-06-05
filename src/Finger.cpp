@@ -10,8 +10,7 @@ public:
     int x_update;
     int y_update;
 
-    int x_updates;
-    int y_updates;
+    bool moved;
 
     Finger() {}
 
@@ -35,9 +34,8 @@ public:
         }
         else
         {
-            x_update = new_x - abs_x;
+            x_update += new_x - abs_x;
             abs_x = new_x;
-            x_updates += 1;
         }
     }
     void move_y(int new_y)
@@ -46,8 +44,7 @@ public:
         {
             abs_y = new_y;
         }
-        y_update = new_y - abs_y;
+        y_update += new_y - abs_y;
         abs_y = new_y;
-        y_updates += 1;
     }
 };

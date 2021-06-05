@@ -43,9 +43,8 @@ public:
                 // one finger handling for edge gestures
                 current_slot = 0;
             }
-            gesture.move_finger("x", current_slot, ev.value);
-            gesture.update();
-            gesture.clear_updates();
+            gesture.move_finger("x", current_slot, ev.value, ev.time);
+            gesture.try_perform();
         }
         else if (ev.code == ABS_MT_POSITION_Y)
         {
@@ -54,10 +53,8 @@ public:
                 // one finger handling for edge gestures
                 current_slot = 0;
             }
-            gesture.move_finger("y", current_slot, ev.value);
-            gesture.update();
-            gesture.clear_updates();
-
+            gesture.move_finger("y", current_slot, ev.value, ev.time);
+            gesture.try_perform();
         }
 
         return 1;

@@ -27,6 +27,8 @@ public:
 
     int total_update_x;
     int total_update_y;
+    double debounce;
+    double update_time;
 
     bool ready = false;
     map<int, Finger *> slots;
@@ -61,11 +63,11 @@ public:
             {
                 this->position = GesturePosition::right;
             }
-            else if (abs_y < 100)
+            else if (abs_y < 150)
             {
                 this->position = GesturePosition::top;
             }
-            else if (abs_y > 699)
+            else if (abs_y > 609)
             {
                 this->position = GesturePosition::bottom;
             }
@@ -139,7 +141,7 @@ public:
         slots.insert({slot, finger});
         this->phase = Phase::start;
     }
-    void perform()
+    void call()
     {
 
         GesturePosition position = this->position;
@@ -184,8 +186,9 @@ public:
             cout << "FIRE!" << endl;
         }
         else if (position == GesturePosition::bottom)
-        {
-            if (direction == GestureDirection::right)
+        {   
+            // todo: calculate direction more precicely as edge-righ sometimes is up_right or down_right
+            if (direction == GestureDirection::right || direction == GestureDirection::up_right || direction == GestureDirection::down_right)
             {
                 if (phase == Phase::start)
                 {
@@ -204,7 +207,7 @@ public:
                     system("xte \'keyup Alt_L\'");
                 }
             }
-            else if (direction == GestureDirection::left)
+            else if (direction == GestureDirection::left || direction == GestureDirection::up_left || direction == GestureDirection::down_left)
             {
 
                 if (phase == Phase::start)
@@ -230,33 +233,47 @@ public:
         {
             phase = Phase::update;
         }
+        this->debounce = 0;
     }
 
-    void move_finger(const string axis, int slot, int value)
+    void move_finger(const string axis, int slot, int value, timeval time)
     {
         Finger *finger = slots.at(slot);
         if (axis == "x")
         {
+            int prev_update = finger->x_update;
             finger->move_x(value);
-            total_update_x += finger->x_update;
+            total_update_x += finger->x_update - prev_update;
         }
         else if (axis == "y")
         {
+            int prev_update = finger->y_update;
             finger->move_y(value);
-            total_update_y += finger->y_update;
+            total_update_y += finger->y_update - prev_update;
         }
 
         int thr = finger->x_update * finger->x_update + finger->y_update * finger->y_update;
-        if (thr > THRESHOLD_SQUARED)
+        if (!finger->moved)
         {
-            cout << finger->x_update << "^2 + " << finger->y_update << "^2 = " << thr << " > " << THRESHOLD_SQUARED << endl;
-            fingers_moved += 1;
+            if (thr > THRESHOLD_SQUARED)
+            {
+                cout << finger->x_update << "^2 + " << finger->y_update << "^2 = " << thr << " > " << THRESHOLD_SQUARED << endl;
+                finger->moved = true;
+                fingers_moved += 1;
+            }
         }
+
+        double now_time = time.tv_sec + (time.tv_usec / 1000000.0);
+        if (this->debounce < DEBOUNCE)
+        {
+            this->debounce = now_time - this->update_time;
+        }
+        this->update_time = now_time;
     }
     void clear(int slot)
     {
         this->phase = Phase::end;
-        update();
+        try_perform();
         slots.erase(slot);
         fingers_moved = 0;
         total_update_x = 0;
@@ -265,7 +282,7 @@ public:
         direction = GestureDirection::idle;
         cout << "ERASING" << endl;
     }
-    void update()
+    void try_perform()
     {
         int fingers_count = slots.size();
         // cout << "fingers count: " << fingers_count << " moved: " << fingers_moved << endl;
@@ -273,10 +290,11 @@ public:
         {
             measure_direction();
             measure_position();
-            thread t1(&Gesture::perform, this);
+            thread t1(&Gesture::call, this);
             // t1.detach();
             // 2-3 commands/Fires lag if detach thread so now Main waits for excecution of command/thread
             t1.join();
+            clear_updates();
         }
     }
 
@@ -286,10 +304,9 @@ public:
         int fingers_count = slots.size();
         for (int i = 0; i < fingers_count; i++)
         {
-            slots.at(i)->x_updates = 0;
-            slots.at(i)->y_updates = 0;
             slots.at(i)->x_update = 0;
-            slots.at(i)->y_updates = 0;
+            slots.at(i)->y_update = 0;
+            slots.at(i)->moved = false;
         }
     }
 };
