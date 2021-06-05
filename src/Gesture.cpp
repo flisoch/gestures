@@ -82,18 +82,22 @@ public:
     }
     void perform()
     {
-        cout << "here perform" << endl;
+
         GesturePosition position = this->position;
         GestureDirection direction = this->direction;
+        cout << "DIRECTION: " << direction << endl;
+        cout << "POSITION: " << position << endl;
+
         if (position == GesturePosition::left)
         {
             if (direction == GestureDirection::down)
             {
                 system("xte \'key XF86MonBrightnessDown\'");
+                cout << "lef & down = BrightnessDown" << endl;
             }
             else if (direction == GestureDirection::up)
             {
-                cout << "up" << endl;
+
                 system("xte \'key XF86MonBrightnessUp\'");
             }
             cout << "FIRE!" << endl;
@@ -139,6 +143,8 @@ public:
         fingers_moved = 0;
         total_update_x = 0;
         total_update_y = 0;
+        position = GesturePosition::idle;
+        direction = GestureDirection::idle;
         cout << "ERASING" << endl;
     }
     void update()
@@ -146,7 +152,7 @@ public:
         int fingers_count = slots.size();
         if (!ready)
         {
-            cout << "fingers count: " << fingers_count << " moved: " << fingers_moved << endl;
+            // cout << "fingers count: " << fingers_count << " moved: " << fingers_moved << endl;
             if (fingers_count == fingers_moved)
             {
 
@@ -236,7 +242,10 @@ public:
 
                     //perform gesture in new thread
                     thread t1(&Gesture::perform, this);
+                    // t1.detach();
+                    // 2-3 commands/Fires lag if detach thread so now Main waits for excecution of command/thread
                     t1.join();
+                    
                 }
             }
         }
