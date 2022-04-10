@@ -1,4 +1,7 @@
+#ifndef __GESTUREPOSITION_H__
+#define __GESTUREPOSITION_H__
 
+#include <iostream>
 
 enum class GesturePosition
 {
@@ -10,7 +13,7 @@ enum class GesturePosition
     idle
 };
 
-std::ostream &operator<<(std::ostream &stream, const GesturePosition position)
+inline std::ostream &operator<<(std::ostream &stream, const GesturePosition position)
 {
     switch (position)
     {
@@ -35,3 +38,4 @@ std::ostream &operator<<(std::ostream &stream, const GesturePosition position)
     }
     return stream;
 }
+#endif // __GESTUREPOSITION_H__

@@ -3,22 +3,34 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <linux/input.h>
-#include "EventHandler.cpp"
+#include <string>
+#include "EventHandler.h"
 
 #define EVENT_DEVICE "/dev/input/event12"
 #define EVENT_TYPE EV_ABS
 #define EVENT_CODE_X ABS_X
 #define EVENT_CODE_Y ABS_Y
 
-/* TODO: Close fd on SIGINT (Ctrl-C), if it's open */
 
-using namespace std;
-void print_device_name(int fd)
+std::string get_mt_event_device()
+{
+    //find device event
+    FILE *output_file = popen("cat /proc/bus/input/devices  | grep -P '^[NH]: ' | grep -A1 Touchpad | grep -o 'event\\w*'", "r");
+    char buffer[128];
+    fgets(buffer, sizeof buffer, output_file);
+    pclose(output_file);
+    std::string device = "/dev/input/";
+    device += std::string(buffer);
+    device.pop_back(); //remove last character to open correct device
+    return device;
+}
+
+void print_device_name(int fd, const std::string& event_device)
 {
     char name[256] = "Unknown";
     ioctl(fd, EVIOCGNAME(sizeof(name)), name);
     printf("Reading from:\n");
-    printf("device file = %s\n", EVENT_DEVICE);
+    printf("device file = %s\n", event_device.c_str());
     printf("device name = %s\n", name);
 }
 
@@ -26,17 +38,18 @@ int main(int argc, char *argv[])
 {
     struct input_event ev;
     int fd;
+    std::string event_device = get_mt_event_device();
 
     /* Open Device */
-    fd = open(EVENT_DEVICE, O_RDONLY);
+    fd = open(event_device.c_str(), O_RDONLY);
     if (fd == -1)
     {
-        fprintf(stderr, "%s is not a vaild device\n", EVENT_DEVICE);
+        fprintf(stderr, "%s is not a vaild device\n", event_device.c_str());
         return EXIT_FAILURE;
     }
 
     /* Print Device Name */
-    print_device_name(fd);
+    print_device_name(fd, event_device);
 
     EventHandler handler = EventHandler();
     for (;;)

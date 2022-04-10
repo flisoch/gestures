@@ -1,5 +1,7 @@
+#ifndef __GESTURETYPE_H__
+#define __GESTURETYPE_H__
+
 #include <iostream>
-#include <type_traits>
 
 enum class GestureType
 {
@@ -9,7 +11,7 @@ enum class GestureType
     idle
 };
 
-std::ostream &operator<<(std::ostream &stream, const GestureType type)
+inline std::ostream &operator<<(std::ostream &stream, const GestureType type)
 {
     switch (type)
     {
@@ -28,3 +30,4 @@ std::ostream &operator<<(std::ostream &stream, const GestureType type)
     }
     return stream;
 }
+#endif // __GESTURETYPE_H__

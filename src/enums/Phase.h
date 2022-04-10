@@ -1,3 +1,8 @@
+#ifndef __PHASE_H__
+#define __PHASE_H__
+
+#include <iostream>
+
 enum class Phase
 {
     start,
@@ -6,7 +11,7 @@ enum class Phase
     idle
 };
 
-std::ostream &operator<<(std::ostream &stream, const Phase phase)
+inline std::ostream &operator<<(std::ostream &stream, const Phase phase)
 {
     switch (phase)
     {
@@ -25,3 +30,4 @@ std::ostream &operator<<(std::ostream &stream, const Phase phase)
     }
     return stream;
 }
+#endif // __PHASE_H__

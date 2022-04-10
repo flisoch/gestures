@@ -1,3 +1,7 @@
+#ifndef __GESTUREDIRECTION_H__
+#define __GESTUREDIRECTION_H__
+
+#include <iostream>
 
 enum class GestureDirection
 {
@@ -12,7 +16,7 @@ enum class GestureDirection
     idle
 };
 
-std::ostream &operator<<(std::ostream &stream, const GestureDirection direction)
+inline std::ostream &operator<<(std::ostream &stream, const GestureDirection direction)
 {
     switch (direction)
     {
@@ -46,3 +50,4 @@ std::ostream &operator<<(std::ostream &stream, const GestureDirection direction)
     }
     return stream;
 }
+#endif // __GESTUREDIRECTION_H__

@@ -1,19 +1,12 @@
-#include <linux/input.h>
-#include "Gesture.cpp"
+#include "GestureEmitter.h"
 
-using namespace std;
-class GestureEmitter
+
+GestureEmitter::GestureEmitter()
 {
-public:
-    Gesture *gesture;
-    GestureEmitter()
-    {
-        this->gesture = new Gesture();
-    }
+    this->gesture = new Gesture();
+}
 
-    Gesture *emit(input_event &event)
-    {
-
-        return gesture;
-    }
-};
+Gesture* GestureEmitter::emit(input_event &event)
+{
+    return gesture;
+}
