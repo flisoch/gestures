@@ -14,7 +14,6 @@ private:
     Gesture gesture;
 
 public:
-    EventHandler();
     int put(input_event &ev);
 };
 

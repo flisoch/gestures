@@ -9,6 +9,10 @@ set(TARGET_SRC
     src/Gesture.cpp
     src/GestureEmitter.cpp
 )
+FIND_PACKAGE(libconfig++ REQUIRED)
+
 add_executable(gestures ${TARGET_SRC})
+target_link_libraries(gestures config++)
+
 set_property(TARGET gestures PROPERTY CXX_STANDARD 17)
 

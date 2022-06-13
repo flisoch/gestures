@@ -9,11 +9,11 @@ enum class GestureDirection
     down,
     left,
     right,
-    up_right,
-    up_left,
-    down_right,
-    down_left,
-    idle
+    right_up,
+    left_up,
+    right_down,
+    left_down,
+    undefined
 };
 
 inline std::ostream &operator<<(std::ostream &stream, const GestureDirection direction)
@@ -32,22 +32,37 @@ inline std::ostream &operator<<(std::ostream &stream, const GestureDirection dir
     case GestureDirection::right:
         stream << "RIGHT";
         break;
-    case GestureDirection::up_right:
-        stream << "UP-RIGHT";
+    case GestureDirection::right_up:
+        stream << "RIGHT-UP";
         break;
-    case GestureDirection::up_left:
-        stream << "UP-LEFT";
+    case GestureDirection::left_up:
+        stream << "LEFT-UP";
         break;
-    case GestureDirection::down_right:
-        stream << "DOWN-RIGHT";
+    case GestureDirection::right_down:
+        stream << "RIGHT-DOWN";
         break;
-    case GestureDirection::down_left:
-        stream << "DOWN-LEFT";
+    case GestureDirection::left_down:
+        stream << "LEFT-DOWN";
         break;
-    case GestureDirection::idle:
+    case GestureDirection::undefined:
         stream << "IDLE/NONE";
         break;
     }
     return stream;
+}
+
+inline std::string to_string(GestureDirection GestureDirection) {
+  switch (GestureDirection) {
+    case GestureDirection::up:   return "up";
+    case GestureDirection::down: return "down";
+    case GestureDirection::left:  return "left";
+    case GestureDirection::right: return "right";
+    case GestureDirection::right_up:   return "right_up";
+    case GestureDirection::left_up: return "left_up";
+    case GestureDirection::right_down:  return "right_down";
+    case GestureDirection::left_down: return "left_down";
+    default: return "undefined";
+  }
+  return "undefined";
 }
 #endif // __GESTUREDIRECTION_H__

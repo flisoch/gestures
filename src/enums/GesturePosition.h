@@ -10,7 +10,7 @@ enum class GesturePosition
     top,
     bottom,
     middle,
-    idle
+    undefined
 };
 
 inline std::ostream &operator<<(std::ostream &stream, const GesturePosition position)
@@ -32,7 +32,7 @@ inline std::ostream &operator<<(std::ostream &stream, const GesturePosition posi
     case GesturePosition::middle:
         stream << "MIDDLE";
         break;
-    case GesturePosition::idle:
+    case GesturePosition::undefined:
         stream << "IDLE/NONE";
         break;
     }
