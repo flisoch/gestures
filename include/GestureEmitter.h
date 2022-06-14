@@ -7,8 +7,8 @@
 class GestureEmitter
 {
 public:
-    Gesture *gesture;
+    Gesture gesture;
     GestureEmitter();
-    Gesture *emit(input_event &event);
+    Gesture &emit(input_event &event);
 };
 #endif // __GESTUREEMITTER_H__

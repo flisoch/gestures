@@ -8,7 +8,7 @@ enum class Phase
     start,
     update,
     end,
-    idle
+    undefined
 };
 
 inline std::ostream &operator<<(std::ostream &stream, const Phase phase)
@@ -24,10 +24,21 @@ inline std::ostream &operator<<(std::ostream &stream, const Phase phase)
     case Phase::end:
         stream << "END";
         break;
-    case Phase::idle:
+    case Phase::undefined:
         stream << "IDLE/NONE";
         break;
     }
     return stream;
 }
+
+inline std::string to_string(const Phase phase) {
+  switch (phase) {
+    case Phase::start:   return "start";
+    case Phase::update: return "update";
+    case Phase::end:  return "end";
+    case Phase::undefined: return "undefined";
+    default: return "undefined";
+  }
+}
+
 #endif // __PHASE_H__
