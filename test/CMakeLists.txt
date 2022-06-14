@@ -1,14 +1,15 @@
-project(unittest)
 
 find_package(GTest CONFIG REQUIRED)
-enable_testing()
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+include(GoogleTest)
 
-################################
-# Unit Tests
-################################
-# Add test cpp file
-add_executable( unittest testgtest.cpp )
-# Link test executable against gtest & gtest_main
-target_link_libraries(unittest gtest gtest_main)
-add_test( unittest unittest )
+set(TARGET_SRC 
+    maintest.cpp
+    TouchpadInputEventSourceTest.cpp
+    )
+add_executable( tests ${TARGET_SRC} )
+target_link_libraries(tests PRIVATE
+                        gtest 
+                        gtest_main 
+                        gestures-lib
+                        )
+gtest_discover_tests(tests)
