@@ -2,18 +2,13 @@
 #define __GESTURE_H__
 
 #include <string>
-#include <vector>
 #include <map>
-#include <cmath>
-#include <math.h>
-#include <thread>
-
+#include "libconfig.h++"
 #include "enums/GestureDirection.h"
 #include "enums/GesturePosition.h"
 #include "enums/GestureType.h"
 #include "enums/Phase.h"
 #include "Finger.h"
-#include "libconfig.h++"
 
 class Gesture
 {
@@ -33,9 +28,6 @@ public:
     double update_time = 0; // time of last x/y update of any finger
 
     Gesture();
-    // Gesture(Gesture&) = default;
-    // Gesture(Gesture&&) = default;
-    //~Gesture() = default;
 
     void init_config(libconfig::Config &cfg);
     void add_finger(int slot);

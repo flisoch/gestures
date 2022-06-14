@@ -33,4 +33,3 @@ void Finger::move_y(int new_y)
     y_update += new_y - abs_y;
     abs_y = new_y;
 }
-

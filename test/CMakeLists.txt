@@ -10,6 +10,6 @@ add_executable( tests ${TARGET_SRC} )
 target_link_libraries(tests PRIVATE
                         gtest 
                         gtest_main 
-                        gestures-lib
+                        gestures
                         )
 gtest_discover_tests(tests)

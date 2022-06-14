@@ -1,7 +1,6 @@
 #ifndef __FINGER_H__
 #define __FINGER_H__
 
-
 #include <string>
 
 class Finger

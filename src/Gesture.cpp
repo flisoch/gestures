@@ -2,8 +2,8 @@
 #include "Config.h"
 #include "enums/GestureDirection.h"
 #include "enums/GesturePosition.h"
-#include <thread>
 #include <iostream>
+#include <cmath>
 
 void Gesture::init_config(libconfig::Config &cfg)
 {
@@ -167,14 +167,11 @@ void Gesture::clear_updates()
 void Gesture::try_perform(int slot)
 {
     int fingers_count = finger_slots.size();
-    // std::cout << "fingers count: " << fingers_count << " moved: " << fingers_moved << std::endl;
     if (fingers_count == fingers_moved || phase == Phase::end)
     {
         measure_direction(slot);
         measure_position(slot);
         call();
-        // t1.detach();
-        // 2-3 commands/Fires lag if detach thread so now Main waits for excecution of command/thread
         clear_updates();
     }
 }
@@ -235,7 +232,8 @@ void Gesture::execute_multitouch_gesture()
         std::string fingers_moved_str = int_to_string(fingers_moved);
         const libconfig::Setting &swipes = root["swipe"];
         const libconfig::Setting &one = swipes["one"];
-        if(fingers_moved == 1 || fingers_moved == 2) {
+        if (fingers_moved == 1 || fingers_moved == 2)
+        {
             return;
         }
         try

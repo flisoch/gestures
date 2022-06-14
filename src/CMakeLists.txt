@@ -6,7 +6,7 @@ set(TARGET_SRC
     GestureEmitter.cpp
     TouchpadInputEventSource.cpp
 )
-add_library(gestures-lib ${TARGET_SRC})
+add_library(gestures ${TARGET_SRC})
 
 FIND_PACKAGE(libconfig++ REQUIRED)
-target_link_libraries(gestures-lib config++)
+target_link_libraries(gestures PRIVATE config++)

@@ -1,11 +1,8 @@
 #include <iostream>
-#include <stdlib.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <linux/input.h>
 #include <string>
 #include "EventHandler.h"
-#include "libconfig.h++"
 #include "TouchpadInputEventSource.h"
 
 int main(int argc, char *argv[])

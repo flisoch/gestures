@@ -1,7 +1,6 @@
 #include "EventHandler.h"
 #include "Finger.h"
 
-// EventHandler::EventHandler() {}
 int EventHandler::put(const input_event &ev)
 {
     if (ev.code == ABS_MT_SLOT)
@@ -40,5 +39,5 @@ int EventHandler::put(const input_event &ev)
         gesture.try_perform(current_slot);
     }
 
-    return 1;
+    return 0;
 }

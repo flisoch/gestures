@@ -1,2 +1,2 @@
-add_executable(gestures gestures.cpp)
-target_link_libraries(gestures gestures-lib)
+add_executable(gestures-app gestures.cpp)
+target_link_libraries(gestures-app PRIVATE gestures)

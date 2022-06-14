@@ -37,7 +37,7 @@ void TouchpadInputEventSource::printDeviceName()
     printf("device name = %s\n", name);
 }
 
-const input_event& TouchpadInputEventSource::getEvent()
+const input_event &TouchpadInputEventSource::getEvent()
 {
     const size_t ev_size = sizeof(struct input_event);
     ssize_t size;

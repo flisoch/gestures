@@ -1,9 +1,7 @@
 #ifndef __EVENTHANDLER_H__
 #define __EVENTHANDLER_H__
 
-
 #include <linux/input.h>
-#include <iostream>
 #include "Gesture.h"
 
 

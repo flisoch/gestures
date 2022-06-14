@@ -10,7 +10,7 @@ public:
     TouchpadInputEventSource();
     ~TouchpadInputEventSource();
 
-    const input_event& getEvent() override;
+    const input_event &getEvent() override;
 
 private:
     std::string findEventDevicePath();

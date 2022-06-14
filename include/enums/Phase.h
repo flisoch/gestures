@@ -42,4 +42,3 @@ inline std::string to_string(const Phase phase) {
 }
 
 #endif // __PHASE_H__
-
