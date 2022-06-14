@@ -14,7 +14,7 @@ private:
     Gesture gesture;
 
 public:
-    int put(input_event &ev);
+    int put(const input_event &ev);
 };
 
 #endif // __EVENTHANDLER_H__

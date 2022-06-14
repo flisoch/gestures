@@ -2,7 +2,7 @@
 #include "Finger.h"
 
 // EventHandler::EventHandler() {}
-int EventHandler::put(input_event &ev)
+int EventHandler::put(const input_event &ev)
 {
     if (ev.code == ABS_MT_SLOT)
     {
