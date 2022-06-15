@@ -4,7 +4,7 @@ set(TARGET_SRC
     Finger.cpp
     Gesture.cpp
     GestureEmitter.cpp
-    TouchpadInputEventSource.cpp
+    MT_EventSource.cpp
 )
 add_library(gestures ${TARGET_SRC})
 

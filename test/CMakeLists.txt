@@ -4,7 +4,8 @@ include(GoogleTest)
 
 set(TARGET_SRC 
     maintest.cpp
-    TouchpadInputEventSourceTest.cpp
+    MT_EventSourceTest.cpp
+    ThreadsafeQueueTest.cpp
     )
 add_executable( tests ${TARGET_SRC} )
 target_link_libraries(tests PRIVATE
