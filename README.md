@@ -1,5 +1,6 @@
 # gestures
-C++ implementation of Natask's [gestures](https://github.com/natask/gestures) for linux
+C++ implementation of Natask's [gestures](https://github.com/natask/gestures) for linux.
+Doesn't work now :)
 
 # Dependencies
 - [libconfig](https://github.com/hyperrealm/libconfig)
